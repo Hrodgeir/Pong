@@ -4,22 +4,41 @@ using System;
 
 public class PaddleController : MonoBehaviour
 {
-    private float minY = -3.75f;
-    private float maxY = 3.75f;
+    public float speed = 8;
+    public float yBound = 3.75f;
+    private Rigidbody2D rbPaddle;
 
-    public float speed = 10;
-
-    void Update()
+    /// <summary>
+    /// Initialize the components.
+    /// </summary>
+    void Start()
     {
-        MovePaddle();
+        rbPaddle = GetComponent<Rigidbody2D>();
     }
 
-    private void MovePaddle()
+    /// <summary>
+    /// Move the paddle depending on the direction specified.
+    /// </summary>
+    void Update()
     {
-        float movement = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+        float y = Input.GetAxisRaw("Vertical");
+        rbPaddle.velocity = Vector2.zero;
 
-        Vector2 position = transform.position;
-        position.y = Mathf.Clamp(position.y + movement, minY, maxY);
+        if (y < 0)
+        {
+            rbPaddle.velocity = new Vector2(0, -speed);
+        }
+        else if (y > 0)
+        {
+            rbPaddle.velocity = new Vector2(0, speed);
+        }
+        else
+        {
+            rbPaddle.velocity = new Vector2(0, 0);
+        }
+
+        Vector3 position = transform.position;
+        position.y = Mathf.Clamp(position.y, -yBound, yBound);
         transform.position = position;
     }
 }
