@@ -3,8 +3,14 @@ using System.Collections;
 
 public class BallController : MonoBehaviour
 {
-    public float force;
+    public float constantSpeed = 8.0f;
+    public float scaleFactor = 8.0f;
+
     private Rigidbody2D rbBall;
+
+    // Hold the current score.
+    public static int playerScore = 0;
+    public static int enemyScore = 0;
 
     /// <summary>
     /// Initialize the components.
@@ -15,20 +21,26 @@ public class BallController : MonoBehaviour
     }
 
     /// <summary>
-    /// Applies forces to the ball for startup and if it 
-    /// gets locked in a horizontal or vertical movement.
+    /// Handles the velocity of the ball.
     /// </summary>
-    void FixedUpdate()
+    void Update()
     {
-        //Debug.Log("Ball velocity: " + rbBall.velocity.magnitude);
-
-        // Move the ball at an angle once the space bar is pressed.
-        if (rbBall.velocity.magnitude == 0)
+        // Move the ball at an angle once the space bar is pressed
+        if (rbBall.position.Equals(Vector2.zero))
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Debug.Log("Game started.");
-                rbBall.AddForce(new Vector2(force, force));
+                Debug.Log("Round started.");
+
+                // Generate a random value to determine which direction the ball will move
+                float startingSpeed = constantSpeed;
+                float randomVal = Random.value;
+                if (randomVal > 0.5)
+                {
+                    startingSpeed *= -1;
+                }
+
+                rbBall.AddForce(new Vector2(startingSpeed, constantSpeed));
             }
             else
             {
@@ -36,24 +48,28 @@ public class BallController : MonoBehaviour
             }
         }
 
-        // Add some force if the ball is not moving horizontally.
-        if (rbBall.velocity.x < 0.1 && rbBall.velocity.x > 0.1)
+        // Handle the ball's velocity while the game is running
+        Vector2 curVel = rbBall.velocity;
+        Vector2 newVel = curVel.normalized * constantSpeed;
+        rbBall.velocity = Vector2.Lerp(curVel, newVel, Time.deltaTime * scaleFactor);
+
+        // Check the left boundary
+        if (transform.position.x < -7)
         {
-            rbBall.AddForce(new Vector2(force, 0));
+            enemyScore++;
+            rbBall.position = Vector2.zero;
+            rbBall.velocity = Vector2.zero;
+        }
+        
+        // Check the right boundary
+        if (transform.position.x > 7)
+        {
+            playerScore++;
+            rbBall.position = Vector2.zero;
+            rbBall.velocity = Vector2.zero;
         }
 
-        // Add some force if the ball is not moving vertically.
-        if (rbBall.velocity.y < 0.1 && rbBall.velocity.y > -0.1)
-        {
-            rbBall.AddForce(new Vector2(0, force));
-        }
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log("Ball collided with something.");
-
-        Vector2 moreSpeed = rbBall.velocity;
-
+        Debug.Log("Player Score: " + playerScore);
+        Debug.Log("Enemy Score: " + enemyScore);
     }
 }
