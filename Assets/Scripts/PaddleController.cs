@@ -4,8 +4,11 @@ using System;
 
 public class PaddleController : MonoBehaviour
 {
+    // Public variables
     public float speed = 8;
     public float yBound = 3.75f;
+
+    // Private variables
     private Rigidbody2D rbPaddle;
 
     /// <summary>
@@ -24,19 +27,23 @@ public class PaddleController : MonoBehaviour
         float y = Input.GetAxisRaw("Vertical");
         rbPaddle.velocity = Vector2.zero;
 
+        // Move down if button pressed
         if (y < 0)
         {
             rbPaddle.velocity = new Vector2(0, -speed);
         }
+        // Move up if button pressed
         else if (y > 0)
         {
             rbPaddle.velocity = new Vector2(0, speed);
         }
+        // Remain stationary if no input
         else
         {
-            rbPaddle.velocity = new Vector2(0, 0);
+            rbPaddle.velocity = Vector2.zero;
         }
 
+        // Lock the position of the paddle in the boundaries
         Vector3 position = transform.position;
         position.y = Mathf.Clamp(position.y, -yBound, yBound);
         transform.position = position;

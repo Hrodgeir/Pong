@@ -3,9 +3,11 @@ using System.Collections;
 
 public class BallController : MonoBehaviour
 {
+    // Public variables
     public float constantSpeed = 8.0f;
     public float scaleFactor = 8.0f;
 
+    // Private variables
     private Rigidbody2D rbBall;
 
     // Hold the current score.
@@ -69,6 +71,7 @@ public class BallController : MonoBehaviour
             rbBall.velocity = Vector2.zero;
         }
 
+        // Display scores
         Debug.Log("Player Score: " + playerScore);
         Debug.Log("Enemy Score: " + enemyScore);
     }
