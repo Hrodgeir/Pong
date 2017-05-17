@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class BallController : MonoBehaviour
 {
     // Public variables
-    public float constantSpeed = 8.0f;
-    public float scaleFactor = 8.0f;
+    public float constantSpeed = 8f;
+    public float scaleFactor = 8f;
 
     // Private variables
     private Rigidbody2D rbBall;
+    private Text txtPlayerScore;
+    private Text txtEnemyScore;
 
     // Hold the current score.
     public static int playerScore = 0;
@@ -20,6 +23,8 @@ public class BallController : MonoBehaviour
     void Start()
     {
         rbBall = GetComponent<Rigidbody2D>();
+        txtPlayerScore = GameObject.Find("Player Score").GetComponent<Text>();
+        txtEnemyScore = GameObject.Find("Enemy Score").GetComponent<Text>();
     }
 
     /// <summary>
@@ -56,7 +61,7 @@ public class BallController : MonoBehaviour
         rbBall.velocity = Vector2.Lerp(curVel, newVel, Time.deltaTime * scaleFactor);
 
         // Check the left boundary
-        if (transform.position.x < -7)
+        if (transform.position.x < -7.7)
         {
             enemyScore++;
             rbBall.position = Vector2.zero;
@@ -64,15 +69,18 @@ public class BallController : MonoBehaviour
         }
         
         // Check the right boundary
-        if (transform.position.x > 7)
+        if (transform.position.x > 7.7)
         {
             playerScore++;
             rbBall.position = Vector2.zero;
             rbBall.velocity = Vector2.zero;
         }
 
-        // Display scores
+        // Update the scores
         Debug.Log("Player Score: " + playerScore);
         Debug.Log("Enemy Score: " + enemyScore);
+
+        txtPlayerScore.text = "Player Score: " + playerScore;
+        txtEnemyScore.text = "Enemy Score: " + enemyScore;
     }
 }

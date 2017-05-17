@@ -5,8 +5,8 @@ using System;
 public class PaddleController : MonoBehaviour
 {
     // Public variables
-    public float speed = 8;
-    public float yBound = 3.75f;
+    public float speed = 6f;
+    public float yBound = 3f;
 
     // Private variables
     private Rigidbody2D rbPaddle;

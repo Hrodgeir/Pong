@@ -4,8 +4,8 @@ using System.Collections;
 public class AIController : MonoBehaviour
 {
     // Public variables
-    public float speed = 8;
-    public float yBound = 3.75f;
+    public float speed = 3.5f;
+    public float yBound = 3f;
     public GameObject ball;
 
     // Private variables
@@ -28,13 +28,16 @@ public class AIController : MonoBehaviour
         Rigidbody2D rbBall = ball.GetComponent<Rigidbody2D>();
         rbAIPaddle.velocity = Vector2.zero;
 
+        // Get the difference between the paddle and the ball
+        float diffPaddleBall = rbAIPaddle.position.y - rbBall.position.y;
+
         // Move down if higher than the ball
-        if (rbAIPaddle.position.y > rbBall.position.y)
+        if (diffPaddleBall > 0)
         {
             rbAIPaddle.velocity = new Vector2(0, -speed);
         }
         // Move up if lower than the ball
-        else if (rbAIPaddle.position.y < rbBall.position.y)
+        else if (diffPaddleBall < 0)
         {
             rbAIPaddle.velocity = new Vector2(0, speed);
         }
