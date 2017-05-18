@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 public class BallController : MonoBehaviour
 {
     // Public variables
+    public bool isMainMenu = false;
     public float constantSpeed = 8f;
     public float scaleFactor = 8f;
 
@@ -13,7 +13,7 @@ public class BallController : MonoBehaviour
     private Text txtPlayerScore;
     private Text txtEnemyScore;
 
-    // Hold the current score.
+    // Hold the current score
     public static int playerScore = 0;
     public static int enemyScore = 0;
 
@@ -23,8 +23,11 @@ public class BallController : MonoBehaviour
     void Start()
     {
         rbBall = GetComponent<Rigidbody2D>();
-        txtPlayerScore = GameObject.Find("Player Score").GetComponent<Text>();
-        txtEnemyScore = GameObject.Find("Enemy Score").GetComponent<Text>();
+        if (!isMainMenu)
+        {
+            txtPlayerScore = GameObject.Find("Player Score").GetComponent<Text>();
+            txtEnemyScore = GameObject.Find("Enemy Score").GetComponent<Text>();
+        }
     }
 
     /// <summary>
@@ -35,10 +38,8 @@ public class BallController : MonoBehaviour
         // Move the ball at an angle once the space bar is pressed
         if (rbBall.position.Equals(Vector2.zero))
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) || isMainMenu)
             {
-                Debug.Log("Round started.");
-
                 // Generate a random value to determine which direction the ball will move
                 float startingSpeed = constantSpeed;
                 float randomVal = Random.value;
@@ -61,7 +62,7 @@ public class BallController : MonoBehaviour
         rbBall.velocity = Vector2.Lerp(curVel, newVel, Time.deltaTime * scaleFactor);
 
         // Check the left boundary
-        if (transform.position.x < -7.7)
+        if (transform.position.x < -10)
         {
             enemyScore++;
             rbBall.position = Vector2.zero;
@@ -69,18 +70,19 @@ public class BallController : MonoBehaviour
         }
         
         // Check the right boundary
-        if (transform.position.x > 7.7)
+        if (transform.position.x > 10)
         {
             playerScore++;
             rbBall.position = Vector2.zero;
             rbBall.velocity = Vector2.zero;
         }
 
-        // Update the scores
-        Debug.Log("Player Score: " + playerScore);
-        Debug.Log("Enemy Score: " + enemyScore);
-
-        txtPlayerScore.text = "Player Score: " + playerScore;
-        txtEnemyScore.text = "Enemy Score: " + enemyScore;
+        // Perform if actually in game
+        if (!isMainMenu)
+        {
+            // Update the score display
+            txtPlayerScore.text = "Player Score: " + playerScore;
+            txtEnemyScore.text = "Enemy Score: " + enemyScore;
+        }
     }
 }
